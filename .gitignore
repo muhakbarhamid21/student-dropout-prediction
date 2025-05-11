@@ -1,0 +1,63 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# PyInstaller
+*.spec
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Logs and local metadata
+*.log
+*.db
+*.sqlite3
+
+# VSCode or PyCharm settings
+.vscode/
+.idea/
+
+# Mac OS
+.DS_Store
+
+# Streamlit config and cache
+.streamlit/
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# Metabase database file
+#metabase.db.mv.db
+
+# Dashboard screenshots or outputs
+#*-dashboard/
+
+# Python model files
+#model/
+#*.pkl
+#*.joblib
+#*.h5
+
+# Video submission
+*-video.*
+
+# CSV or dataset backups (optional, if not versioned)
+#*.csv
+#data/
+
+# Literature study article
+*.pdf
