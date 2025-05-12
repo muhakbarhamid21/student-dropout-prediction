@@ -1,6 +1,6 @@
-# Proyek Akhir - Menyelesaikan Permasalahan Institusi Pendidikan: ....
+# Proyek Akhir - Menyelesaikan Permasalahan Institusi Pendidikan: Prediksi Dropout Mahasiswa dan Visualisasi Performa Akademik di Jaya Jaya Institut
 
-- [Proyek Akhir - Menyelesaikan Permasalahan Institusi Pendidikan: ....](#proyek-akhir---menyelesaikan-permasalahan-institusi-pendidikan-)
+- [Proyek Akhir - Menyelesaikan Permasalahan Institusi Pendidikan: Prediksi Dropout Mahasiswa dan Visualisasi Performa Akademik di Jaya Jaya Institut](#proyek-akhir---menyelesaikan-permasalahan-institusi-pendidikan-prediksi-dropout-mahasiswa-dan-visualisasi-performa-akademik-di-jaya-jaya-institut)
   - [Business Understanding](#business-understanding)
     - [Latar Belakang](#latar-belakang)
     - [Permasalahan Bisnis](#permasalahan-bisnis)
