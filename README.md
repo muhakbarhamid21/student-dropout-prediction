@@ -9,11 +9,10 @@
       - [Sumber Data](#sumber-data)
       - [Setup Environment](#setup-environment)
   - [Business Dashboard](#business-dashboard)
-  - [Menjalankan Sistem Machine Learning](#menjalankan-sistem-machine-learning)
+  - [Sistem Machine Learning](#sistem-machine-learning)
     - [Studi Literatur](#studi-literatur)
-    - [Model Machine Learning yang Diuji](#model-machine-learning-yang-diuji)
     - [Evaluasi Model Machine Learning](#evaluasi-model-machine-learning)
-    - [Inferensi Prototype Sistem Machine Learning](#inferensi-prototype-sistem-machine-learning)
+    - [Menjelankan Inferensi Prototype Sistem Machine Learning di Streamlit](#menjelankan-inferensi-prototype-sistem-machine-learning-di-streamlit)
   - [Conclusion](#conclusion)
     - [Rekomendasi Action Items](#rekomendasi-action-items)
 
@@ -94,15 +93,55 @@ s
 
 Jelaskan tentang business dashboard yang telah dibuat. Jika ada, sertakan juga link untuk mengakses dashboard tersebut.
 
-## Menjalankan Sistem Machine Learning
+## Sistem Machine Learning
 
 ### Studi Literatur
 
-### Model Machine Learning yang Diuji
+Dataset yang dipakai dalam proyek Student Dropout Prediction ini adalah salinan persis dari dataset yang dipublikasikan Realinho et al. (2022) pada makalah “Predicting Student Dropout and Academic Success” ([https://doi.org/10.3390/data7110146](https://doi.org/10.3390/data7110146)).
+
+Realinho dkk. merilis open-data berisi 4442 mahasiswa × 35 atribut yang dikompilasi dari beragam basis data Politeknik Portalegre, Portugal. Atributnya meliputi demografi, sosial-ekonomi, makro-ekonomi, hingga performa akademik semester 1 dan 2. Masalah diformulasikan sebagai klasifikasi tiga kelas—Dropout, Enrolled, Graduate—dengan ketidakseimbangan label (50 % graduate, 32 % dropout, 18 % enrolled). Mereka mengeksplorasi algoritma RF, XGBoost, LightGBM, dan CatBoost, menilai kinerja via F1-score, serta menampilkan Permutation Feature Importance—fitur kinerja semester dan status pembayaran biaya kuliah muncul paling prognostik.
+
+Artikel yang ditulis oleh Realinho dkk. dengan judul "Predicting Student Dropout and Academic Success" tahun 2022, datasetnya menjadi fondasi langsung bagi proyek Student Dropout Prediction untuk Jaya Jaya Institut.
+
+1. Karakteristik Dataset
+   - Ukuran & cakupan – 4 442 mahasiswa, 35 atribut yang menyeberang demografi, sosial-ekonomi, makro-ekonomi, data pendaftaran, serta performa akademik semester 1 dan 2 (periode 2008-2019).
+   - Sumber – agregasi empat sistem internal & eksternal (Academic Management System, PAE, DGES, PORDATA) sehingga tidak ada nilai hilang.
+   - Tugas – klasifikasi tiga kelas (Dropout, Enrolled, Graduate) pada akhir masa studi normal.
+2. Permasalahan Ketidakseimbangan Kelas
+
+   - Mayoritas Graduate 50 %, Dropout 32 %, Enrolled 18 %. Penulis menekankan perlunya penanganan imbalance melalui:
+     - Level data : SMOTE, ADASYN dan variannya.
+     - Level algoritma : Balanced Random Forest, Easy Ensemble, SMOTE-Bagging, dll.
+
+3. Eksplorasi Data dan Insight Awal
+   - Distribusi menurut program studi menunjukkan Nursing & Social Service paling sukses (≥70 % graduate) sementara Biofuel Tech & Informatics Engineering mencatat dropout tertinggi (≥54 %).
+   - Faktor mahasiswa perempuan, penerima beasiswa, dan tuition fees up to date berkorelasi dengan kelulusan yang lebih baik.
+   - Analisis multikolinearitas mengungkap korelasi kuat antar metrik semester (mis. approved S1 vs approved S2, r ≈ 0.90) serta Nationality ↔ International (r ≈ 0.91).
+4. Metodologi Pemodelan
+
+   Penulis menguji Random Forest (RF), XGBoost, LightGBM, dan CatBoost; evaluasi menggunakan macro-F1 untuk mengatasi bias akurasi pada data imbang-semu.
+
+5. Temuan Fitur Penting
+
+   Lima fitur konsisten penting di ke-4 model:
+
+   | Rank | Fitur                                 | Keterangan         |
+   | ---- | ------------------------------------- | ------------------ |
+   | 1    | _Curricular units 2nd sem (approved)_ | Output semester 2  |
+   | 2    | _Curricular units 1st sem (approved)_ | Output semester 1  |
+   | 3    | _Curricular units 2nd sem (grade)_    | Rata-rata nilai S2 |
+   | 4    | _Course_                              | Kode program studi |
+   | 5    | _Tuition fees up to date_             | Status pembayaran  |
+
+   Daftar tersebut muncul setelah uji Permutation Feature Importance pada semua algoritma.
+
+6. Rekomendasi & Keterbatasan Paper
+   - Fokus perbaikan: tangani imbalance, kurangi fitur redundant, perhatikan interpretabilitas model.
+   - Batasan: data single-institution, belum ada integrasi sistem intervensi nyata; butuh pengayaan log LMS & alasan dropout
 
 ### Evaluasi Model Machine Learning
 
-### Inferensi Prototype Sistem Machine Learning
+### Menjelankan Inferensi Prototype Sistem Machine Learning di Streamlit
 
 Jelaskan cara menjalankan protoype sistem machine learning yang telah dibuat. Selain itu, sertakan juga link untuk mengakses prototype tersebut.
 
