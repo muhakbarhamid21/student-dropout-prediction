@@ -11,6 +11,7 @@
   - [Business Dashboard](#business-dashboard)
   - [Sistem Machine Learning](#sistem-machine-learning)
     - [Studi Literatur](#studi-literatur)
+    - [Model Machine Learning yang Dibangun](#model-machine-learning-yang-dibangun)
     - [Evaluasi Model Machine Learning](#evaluasi-model-machine-learning)
     - [Menjelankan Inferensi Prototype Sistem Machine Learning di Streamlit](#menjelankan-inferensi-prototype-sistem-machine-learning-di-streamlit)
   - [Conclusion](#conclusion)
@@ -139,7 +140,237 @@ Artikel yang ditulis oleh Realinho dkk. dengan judul "Predicting Student Dropout
    - Fokus perbaikan: tangani imbalance, kurangi fitur redundant, perhatikan interpretabilitas model.
    - Batasan: data single-institution, belum ada integrasi sistem intervensi nyata; butuh pengayaan log LMS & alasan dropout
 
+### Model Machine Learning yang Dibangun
+
+Dalam proyek ini, digunakan enam algoritma utama, masing-masing dijalankan pada tiga skenario penyeimbangan data (tanpa penyeimbangan/Baseline, SMOTE, dan ADASYN), sehingga total terdapat 18 model:
+
+- Logistic Regression
+  - LR Base
+  - LR + SMOTE
+  - LR + ADASYN
+- Random Forest
+  - RF Base
+  - RF + SMOTE
+  - RF + ADASYN
+- Support Vector Machine (SVC)
+  - SVC Base
+  - SVC + SMOTE
+  - SVC + ADASYN
+- XGBoost
+  - XGB Base
+  - XGB + SMOTE
+  - XGB + ADASYN
+- LightGBM
+  - LGB Base
+  - LGB + SMOTE
+  - LGB + ADASYN
+- CatBoost
+  - CatBoost Base
+  - CatBoost + SMOTE
+  - CatBoost + ADASYN
+
 ### Evaluasi Model Machine Learning
+
+Pada bagian ini dijelaskan mengenai evaluasi model–model yang telah dibangun dan diuji, meliputi fitur yang digunakan, metodologi, hasil metrik, analisis perbandingan, interpretasi confusion matrix, serta rekomendasi model terbaik.
+
+1.  Fitur yang Digunakan
+
+    Model dibangun menggunakan 13 fitur yang dipilih dengan analisis feature selection dengan k terbaik berdasarkan logistic regression hyperparameter tuning optuna dan top fitur berdasarkan skor χ² dari relevansi yang dianggap penting. Fitur-fitur ini menangkap aspek demografis, akademik awal, serta status sosial-ekonomi mahasiswa yang paling relevan untuk memprediksi risiko dropout. Berikut untuk fitur-fitur yang digunakan:
+
+    - Application_mode
+      - Type: Integer
+      - Demograpic: -
+      - Description: Application order (between 0 - first choice; and 9 last choice)
+    - Age_at_enrollment
+      - Type: Integer
+      - Demograpic: Age
+      - Description: Age of studend at enrollment
+    - Curricular_units_1st_sem_approved
+      - Type: Integer
+      - Demograpic: -
+      - Description: Number of curricular units approved in the 1st semester
+    - Curricular_units_1st_sem_grade
+      - Type: Integer / Float64
+      - Demograpic: -
+      - Description: Grade average in the 1st semester (between 0 and 20)
+    - Curricular_units_2nd_sem_approved
+      - Type: Integer
+      - Demograpic: -
+      - Description: Number of curricular units approved in the 2nd semester
+    - Curricular_units_2nd_sem_grade
+      - Type: Integer / Float64
+      - Demograpic: -
+      - Description: Grade average in the 2nd semester (between 0 and 20)
+    - Debtor
+      - Type: Integer
+      - Demograpic: -
+      - Description: 1 – yes 0 – no
+    - Displaced
+      - Type: Integer
+      - Demograpic: -
+      - Description: 1 – yes 0 – no
+    - Gender
+      - Type: Integer
+      - Demograpic: Gender
+      - Description: 1 – male 0 – female
+    - Marital_status
+      - Type: Integer
+      - Demograpic: Marital Status
+      - Description: 1 – single 2 – married 3 – widower 4 – divorced 5 – facto union 6 – legally separated
+    - Previous_qualification
+      - Type: Integer
+      - Demograpic: Education Level
+      - Description: 1 - Secondary education 2 - Higher education - bachelor's degree 3 - Higher education - degree 4 - Higher education - master's 5 - Higher education - doctorate 6 - Frequency of higher education 9 - 12th year of schooling - not completed 10 - 11th year of schooling - not completed 12 - Other - 11th year of schooling 14 - 10th year of schooling 15 - 10th year of schooling - not completed 19 - Basic education 3rd cycle (9th/10th/11th year) or equiv. 38 - Basic education 2nd cycle (6th/7th/8th year) or equiv. 39 - Technological specialization course 40 - Higher education - degree (1st cycle) 42 - Professional higher technical course 43 - Higher education - master (2nd cycle)
+    - Scholarship_holder
+      - Type: Integer
+      - Demograpic: -
+      - Description: 1 – yes 0 – no
+    - Tuition_fees_up_to_date
+      - Type: Integer
+      - Demograpic: -
+      - Description: 1 – yes 0 – no
+
+2.  Metodologi Evaluasi
+    - Data Split & Cross-Validation
+      - Dataset dibagi menjadi training dan testing dengan rasio 80:20.
+      - Setiap model diuji menggunakan 5-fold cross-validation pada data training untuk memilih hyperparameter (Optuna) dan mengestimasi performa yang lebih stabil.
+    - Pendekatan Imbalance Handling
+      - Base: model tanpa penyeimbangan kelas.
+      - SMOTE: oversampling minority class dengan Synthetic Minority Over-sampling Technique.
+      - ADASYN: oversampling adaptif pada minority class.
+    - Metrik yang Digunakan
+      - Accuracy: proporsi prediksi benar (makro-averaged).
+      - Precision: ketepatan prediksi positif (makro-averaged).
+      - Recall: kemampuan mendeteksi seluruh kasus positif (makro-averaged).
+      - F1-Score: harmonisasi precision & recall (makro-averaged).
+      - ROC AUC: area under ROC curve (makro-averaged multiclass).
+      - Confusion Matrix: distribusi prediksi vs. ground truth untuk masing-masing kelas (0=Enrolled, 1=Graduate, 2=Dropout).
+3.  Hasil Metrik
+
+    - Akurasi
+
+      ![Akurasi](assets/accuracy.png)
+
+    - Precision
+
+      ![Precision](assets/precision.png)
+
+    - Recall
+
+      ![Recall](assets/recall.png)
+
+    - F1-Score
+
+      ![F1-Score](assets/f1-score.png)
+
+    - ROC AUC
+
+      ![ROC AUC](assets/roc%20auc.png)
+
+4.  Analisis Hasil
+    - Gradient Boosting Ensembles (CatBoost, XGBoost, LightGBM)
+      - Performa Unggul: Ketiga model boosting tanpa penyeimbangan (Base) mendominasi di semua metrik utama—Cat Base (Accuracy 0.764, F1 0.753, ROC 0.870), XGB Base (0.763, 0.747, 0.869), dan LGB Base (0.760, 0.740, 0.867).
+      - Ketahanan terhadap Overfitting: Meskipun kompleksitasnya tinggi, cross-validation dan hyperparameter tuning Optuna membuat mereka cukup stabil, terbukti selisih kecil antara skor training dan test.
+      - Prioritas Fitur Non-Linier: Kemampuan menangkap interaksi fitur (misal kombinasi Curricular*units*\*\_grade dengan Age_at_enrollment) menghasilkan peningkatan signifikan dibanding model linear.
+    - Random Forest
+      - Performa Kompetitif: RF Base menempati peringkat ke-4 dengan Accuracy 0.755, F1 0.734, ROC 0.867—hanya selisih ≈1 % dari boosting.
+      - Robustness Terhadap Noise: RF cenderung lebih tahan terhadap outlier dan fitur kurang relevan, terlihat dari sedikit penurunan performa saat di-ADASYN/SMOTE (Accuracy turun ~2 %).
+      - Trade-off: RF Base memiliki False Positive lebih sedikit dibanding boosting, cocok jika biaya kesalahan menandai “Dropout” sebagai “Tidak Dropout” lebih tinggi.
+    - Model Linear (Logistic Regression & SVM)
+      - Akurasi & AUC Menengah: LR Base (Accuracy 0.739, ROC 0.835) dan SVC Base (0.738, 0.853) menunjukkan kemampuan dasar memisahkan kelas, tetapi tidak mampu menangkap non-linearitas kompleks.
+      - Gain dari Oversampling:
+        - LR SMOTE/ADASYN meningkatkan recall Dropout (dari 0.739 → 0.659–0.651) namun menurunkan AUC (~0.835 → 0.831).
+        - SVC SMOTE/ADASYN menambah precision (0.729 → 0.744) tapi menurunkan recall & AUC (ke ~0.675–0.638 & 0.850–0.842).
+        - Kapan Digunakan: Model ini cocok saat diperlukan interpretabilitas (koefisien regresi) atau resource komputasi terbatas.
+    - Dampak Oversampling (SMOTE & ADASYN)
+      - Recall Minoritas Naik: Secara rata-rata, recall kelas Dropout naik ~3–6 % dibanding Base, membantu deteksi lebih banyak kasus risiko tinggi.
+      - Precision & AUC Menurun: Trade-off penambahan sampel sintetis menyebabkan peningkatan False Positives, sehingga precision turun ~1–3 % dan ROC AUC menyusut hingga ~2–3 %.
+      - Variasi Per Algoritma:
+        - Cat SMOTE/ADASYN: menurunkan AUC dari 0.870 → 0.855/0.854, namun recall masih tinggi (~0.740/0.725).
+        - RF SMOTE/ADASYN: perubahan metrik lebih kecil (AUC turun ~0.012–0.016), menunjukkan RF lebih toleran terhadap data sintetis.
+      - Rekomendasi Penggunaan:
+        - SMOTE lebih konsisten pada RF dan SVC;
+        - ADASYN sedikit lebih agresif, cocok jika minoritas sangat sedikit, namun berisiko over-generalisasi.
+5.  Interpretasi Confusion Matrix
+
+    Berikut tabel interpretasi confusion matrix untuk kelas Dropout pada setiap model.
+
+    - TP = True Positives: jumlah benar mahasiswa Dropout
+    - FN = False Negatives: mahasiswa Dropout yang terlewat (diprediksi bukan Dropout)
+    - FP = False Positives: mahasiswa non-Dropout yang keliru diprediksi Dropout
+
+      | Model          |  TP |  FN |  FP |
+      | -------------- | --: | --: | --: |
+      | **Cat Base**   | 400 |  42 |  96 |
+      | **XGB Base**   | 407 |  35 | 105 |
+      | **LGB Base**   | 411 |  31 | 114 |
+      | **RF Base**    | 409 |  33 | 113 |
+      | **Cat SMOTE**  | 375 |  67 |  81 |
+      | **LR Base**    | 418 |  24 | 141 |
+      | **SVC Base**   | 410 |  32 | 122 |
+      | **RF ADASYN**  | 377 |  65 |  90 |
+      | **RF SMOTE**   | 379 |  63 |  92 |
+      | **XGB ADASYN** | 381 |  61 |  94 |
+      | **XGB SMOTE**  | 378 |  64 |  89 |
+      | **Cat ADASYN** | 371 |  71 |  86 |
+      | **LGB ADASYN** | 376 |  66 |  99 |
+      | **LGB SMOTE**  | 372 |  70 |  91 |
+      | **SVC SMOTE**  | 326 | 116 |  62 |
+      | **LR SMOTE**   | 312 | 130 |  69 |
+      | **LR ADASYN**  | 291 | 151 |  59 |
+      | **SVC ADASYN** | 294 | 148 |  57 |
+
+6.  Rekomendasi Model Terbaik
+
+    Berdasarkan seluruh hasil evaluasi—metrik kuantitatif, confusion matrix, serta kebutuhan bisnis Jaya Jaya Institut—berikut rekomendasi model terbaik beserta pertimbangannya.
+
+    | Kriteria                        | CatBoost Base                   | XGBoost Base                | LightGBM Base               |
+    | ------------------------------- | ------------------------------- | --------------------------- | --------------------------- |
+    | **Accuracy**                    | **0.7638** (terbaik)            | 0.7627                      | 0.7605                      |
+    | **F1-Score**                    | **0.7526** (terbaik)            | 0.7465                      | 0.7398                      |
+    | **ROC AUC**                     | **0.8701** (terbaik)            | 0.8694                      | 0.8666                      |
+    | **Recall (Dropout)**            | 0.7638                          | 0.7627                      | 0.7605                      |
+    | **Precision (Dropout)**         | 0.7486                          | 0.7446                      | 0.7411                      |
+    | **True Positives (Dropout)**    | 400                             | 407                         | 411                         |
+    | **False Positives (Dropout)**   | 96                              | 105                         | 114                         |
+    | **Inference Time (per sampel)** | Medium                          | Cepat                       | Sangat Cepat                |
+    | **Kemudahan Tuning**            | Mudah (parameter fewer)         | Agresif (banyak parameter)  | Mudah (leaf-wise)           |
+    | **Stabilitas & Robustness**     | Sangat stabil (noise-resistant) | Stabil                      | Stabil                      |
+    | **Interpretabilitas**           | Feature importance built-in     | Feature importance tersedia | Feature importance tersedia |
+
+    - Alasan Memilih CatBoost Base
+
+      - Performansi Teratas di Semua Metrik Kunci
+
+        Menempati urutan pertama untuk Accuracy, F1-Score, dan ROC AUC, mengindikasikan kemampuan generalisasi dan pemisahan kelas terbaik.
+
+      - Keseimbangan Precision–Recall
+
+        Recall Dropout 0.764 “menangkap” sebagian besar mahasiswa berisiko, sementara precision 0.749 meminimalkan false alarm (bimbingan tidak perlu).
+
+      - Robustness tanpa Oversampling
+
+        Tanpa SMOTE/ADASYN, model ini stabil menghadapi distribusi asli: menghindari efek sampel sintetis yang bisa menimbulkan overfitting pada minoritas.
+
+      - Kemudahan Implementasi & Auto-handling Categorical
+
+        CatBoost menangani fitur kategorikal secara native tanpa perlu one-hot encoding, mempersingkat pipeline dan mengurangi risiko data leakage.
+
+      - Kecepatan Inference
+
+        Cukup efisien untuk produksi di Streamlit; memerlukan waktu inferensi menengah, masih jauh di bawah batas real-time.
+
+      - Dukungan Interpretasi
+
+        Fitur built-in untuk SHAP values / feature importance memudahkan stakeholder (bidang akademik & bimbingan) memahami faktor penyebab dropout.
+
+    - Pertimbangan Alternatif
+      - XGBoost Base: hampir setara performa (selisih ≤0.1 % di ROC AUC) dan lebih cepat saat inferensi, cocok jika resource CPU/GPU terbatas. Namun memerlukan preprocessing fitur kategorikal (one-hot/dummy).
+      - LightGBM Base: tercepat inferensinya, ideal untuk batch scoring sangat besar, walau metriknya sedikit di bawah CatBoost (~0.003 di ROC AUC).
+    - Strategi Penggunaan Model
+      - Produksi Utama: Deploy CatBoost Base sebagai model prediksi risiko dropout.
+      - Threshold Adjustment: Sesuaikan threshold probabilitas (default 0.5) agar recall Dropout semakin tinggi (e.g. 0.4) jika bimbingan proaktif lebih diutamakan.
+      - Interpretasi & Action: Gunakan SHAP untuk men-generate laporan fitur dominan per mahasiswa berisiko, memudahkan tim bimbingan merancang intervensi yang tepat.
 
 ### Menjelankan Inferensi Prototype Sistem Machine Learning di Streamlit
 
