@@ -22,6 +22,7 @@ dist/
 *.egg-info/
 *.egg
 .eggs/
+catboost_info/
 
 # Logs and local metadata
 *.log
