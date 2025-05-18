@@ -33,8 +33,9 @@ catboost_info/
 .vscode/
 .idea/
 
-# Mac OS
+# Mac OS & Microsoft specific files
 .DS_Store
+~$*
 
 # Streamlit config and cache
 .streamlit/
