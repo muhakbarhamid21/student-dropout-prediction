@@ -80,36 +80,21 @@ col1, col2, col3 = st.columns(3)
 with col1:
     gender = st.selectbox("Jenis Kelamin", ["Laki-laki", "Perempuan"])
 with col2:
-    age_at_enrollment = st.number_input(
-        "Usia Saat Pendaftaran", min_value=16, max_value=100, value=18
-    )
+    age_at_enrollment = st.number_input("Usia Saat Pendaftaran", min_value=16, max_value=100, value=18)
 with col3:
-    marital_status = st.selectbox(
-        "Status Pernikahan", 
-        ["Belum Menikah","Menikah","Duda/Janda","Cerai","Kehidupan Faktual","Pemisahan Hukum"]
-    )
+    marital_status = st.selectbox("Status Pernikahan", ["Belum Menikah","Menikah","Duda/Janda","Cerai","Kehidupan Faktual","Pemisahan Hukum"])
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    previous_qualification = st.selectbox(
-        "Kualifikasi Sebelumnya", options=list(prev_qual_options.keys()),
-        format_func=lambda x: f"{x} - {prev_qual_options[x]}"
-    )
+    previous_qualification = st.selectbox("Kualifikasi Sebelumnya", options=list(prev_qual_options.keys()), format_func=lambda x: f"{x} - {prev_qual_options[x]}")
 with col2:
-    scholarship_holder = st.selectbox(
-        "Penerima Beasiswa", ["Tidak","Ya"]
-    )
+    scholarship_holder = st.selectbox("Penerima Beasiswa", ["Tidak","Ya"])
 with col3:
-    tuition_fees_up_to_date = st.selectbox(
-        "Pembayaran UKT Lancar", ["Tidak","Ya"]
-    )
+    tuition_fees_up_to_date = st.selectbox("Pembayaran UKT Lancar", ["Tidak","Ya"])
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    application_mode = st.selectbox(
-        "Mode Pendaftaran", options=list(app_mode_options.keys()),
-        format_func=lambda x: f"{x} - {app_mode_options[x]}"
-    )
+    application_mode = st.selectbox("Mode Pendaftaran", options=list(app_mode_options.keys()), format_func=lambda x: f"{x} - {app_mode_options[x]}")
 with col2:
     displaced = st.selectbox("Pindah Domisili", ["Tidak","Ya"])
 with col3:
@@ -117,13 +102,9 @@ with col3:
 
 col1, col2 = st.columns(2)
 with col1:
-    curricular_units_1st_sem_approved = st.number_input(
-        "SKS Disetujui Semester 1 (0 - 60)", min_value=0, max_value=60, value=0
-    )
+    curricular_units_1st_sem_approved = st.number_input("SKS Disetujui Semester 1 (0 - 60)", min_value=0, max_value=60, value=0)
 with col2:
-    curricular_units_2nd_sem_approved = st.number_input(
-        "SKS Disetujui Sem 2 (0 - 60)", min_value=0, max_value=60, value=0
-    )
+    curricular_units_2nd_sem_approved = st.number_input("SKS Disetujui Sem 2 (0 - 60)", min_value=0, max_value=60, value=0)
 
 col1, col2 = st.columns(2)
 with col1:
@@ -179,7 +160,7 @@ st.markdown(
 predict = st.button("PREDIKSI")
 
 if predict:
-    data = {
+    inputs = {
         'Gender': 1 if gender == 'Laki-laki' else 0,
         'Age_at_enrollment': age_at_enrollment,
         'Marital_status': ["Belum Menikah","Menikah","Duda/Janda","Cerai","Kehidupan Faktual","Pemisahan Hukum"].index(marital_status) + 1,
@@ -194,25 +175,34 @@ if predict:
         'Curricular_units_2nd_sem_approved': curricular_units_2nd_sem_approved,
         'Curricular_units_2nd_sem_grade': curricular_units_2nd_sem_grade
     }
-    input_df = pd.DataFrame([data])
-    pred = model.predict(input_df)[0]
-    proba = model.predict_proba(input_df)[0]
+    df = pd.DataFrame([inputs])
+
+    proba = model.predict_proba(df)[0]
+    classes = list(model.classes_)
+
+    drop_idx = classes.index(1)
+    grad_idx = classes.index(0)
+
+    p_drop = proba[drop_idx]
+    p_grad = proba[grad_idx]
+    total = p_drop + p_grad
+    p_drop_norm = p_drop / total if total > 0 else 0
+    p_grad_norm = p_grad / total if total > 0 else 0
 
     st.markdown("---")
 
     st.subheader("Hasil Prediksi")
-    if pred == 1:
-        st.error("Mahasiswa diprediksi **Dropout**")
+    if p_drop_norm > p_grad_norm:
+        st.error("Mahasiswa diprediksi DROPOUT / KELUAR")
     else:
-        st.success("Mahasiswa diprediksi **Lulus/Graduate**")
+        st.success("Mahasiswa diprediksi GRADUATE / LULUS")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("Probabilitas Dropout", f"{proba[1]:.2%}")
+        st.metric("Probabilitas Dropout", f"{p_drop_norm:.2%}")
     with col2:
-        st.metric("Probabilitas Lulus", f"{proba[0]:.2%}")
+        st.metric("Probabilitas Lulus", f"{p_grad_norm:.2%}")
 
     st.markdown("---")
-
     with st.expander("Data Masukan"):
-        st.dataframe(input_df)
+        st.dataframe(df)
