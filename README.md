@@ -180,7 +180,7 @@ Pada bagian ini dijelaskan mengenai evaluasi model–model yang telah dibangun d
     - Application_mode
       - Type: Integer
       - Demograpic: -
-      - Description: Application order (between 0 - first choice; and 9 last choice)
+      - Description: 1 - 1st phase - general contingent 2 - Ordinance No. 612/93 5 - 1st phase - special contingent (Azores Island) 7 - Holders of other higher courses 10 - Ordinance No. 854-B/99 15 - International student (bachelor) 16 - 1st phase - special contingent (Madeira Island) 17 - 2nd phase - general contingent 18 - 3rd phase - general contingent 26 - Ordinance No. 533-A/99, item b2) (Different Plan) 27 - Ordinance No. 533-A/99, item b3 (Other Institution) 39 - Over 23 years old 42 - Transfer 43 - Change of course 44 - Technological specialization diploma holders 51 - Change of institution/course 53 - Short cycle diploma holders 57 - Change of institution/course (International)
     - Age_at_enrollment
       - Type: Integer
       - Demograpic: Age
