@@ -86,13 +86,98 @@ Dataset yang digunakan dalam proyek ini berasal dari UCI Machine Learning Reposi
 
 #### Setup Environment
 
-```bash
-s
-```
+1.  Clone repositori
+
+    ```bash
+    git clone https://github.com/muhakbarhamid21/student-dropout-prediction.git
+    cd student-dropout-prediction
+    ```
+
+    ```bash
+    cd student-dropout-prediction
+    ```
+
+2.  Buat virtual environment (opsional)
+
+    ```bash
+    python3 -m venv venv
+    ```
+
+    1. Linux/MacOS
+
+       ```bash
+       source venv/bin/activate
+       ```
+
+    2. Windows
+
+       ```bash
+       venv\Scripts\activate
+       ```
+
+3.  Install dependency
+
+    ```bash
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    ```
 
 ## Business Dashboard
 
-Jelaskan tentang business dashboard yang telah dibuat. Jika ada, sertakan juga link untuk mengakses dashboard tersebut.
+URL Dashboard: [https://lookerstudio.google.com/reporting/430ef769-77a1-411d-8af0-470063d05662](https://lookerstudio.google.com/reporting/430ef769-77a1-411d-8af0-470063d05662)
+
+Dashboard interaktif ini dibangun menggunakan Looker Studio untuk membantu Jaya Jaya Institute memonitor kondisi histori mahasiswa sekaligus memproyeksikan risiko dropout. Dashboard terbagi menjadi dua halaman utama:
+
+**Halaman 1 - Exploratory Data Insights:**
+
+![Dashboard - Halaman 1](assets/dashboard-2.jpg)
+
+Tujuan: Menyajikan gambaran deskriptif tentang sebaran dan tren status mahasiswa
+
+Komponen:
+
+1. KPI Cards
+   - Total Mahasiswa (Record Count)
+   - Enrolled Jumlah & Persentase
+   - Graduate Jumlah & Persentase
+   - Dropout Jumlah & Persentase
+   - Avg Age at Enroll
+2. Status Distribution
+   - Visual proporsi Dropout vs Graduate vs Enrolled
+3. Status by Marital Category
+   - Perbandingan jumlah status mahasiswa berdasarkan kategori pernikahan (Single, Married, dll)
+4. Status by Debt Ownership
+   - Dampak status debitur (Yes/No) terhadap outcome mahasiswa
+5. Status by Course
+   - Pembagian status untuk setiap program studi
+6. Status by Scholarship
+   - Perbandingan mahasiswa penerima beasiswa vs non-penerima
+7. Filter Controls
+   - Gender (Male / Female)
+   - Age at Enrollment (slider)
+
+**Halaman 2 - Predictive Risk Analysis for Active Students with `Enrollment` Status:**
+
+![Dashboard - Halaman 2](assets/dashboard-3.jpg)
+
+Tujuan: Menunjukkan hasil model prediksi risiko dropout dan insight fitur pendukungnya terhadap mahasiswa yang berstatus aktif atau `enrollment`.
+
+Komponen:
+
+1. KPI Cards
+   - Students (Enrolled only)
+   - Graduate & Dropout Rate dari kelompok Enrollment
+   - Avg GPA (Sem 1 & Sem 2)
+   - Avg Age at Enroll
+2. Status Distribution
+   - Proporsi prediksi ‘Graduate’ vs ‘Dropout’ pada mahasiswa aktif
+3. Feature Importance by Status
+   - Ranking 13 fitur teratas berdasarkan skor Chi² terhadap status mahasiswa
+4. Dropout Risk Predictions for Enrolled Students
+   - Daftar mahasiswa aktif dengan kolom: Gender, Age, Course, Scholarship, Debtor, Prob Graduate, Prob Dropout, Prediction
+   - Sort descending berdasarkan Prob Dropout tinggi → memudahkan intervensi dini
+5. Average GPA (0–20) by Course
+   - Membandingkan rata-rata GPA Sem 1 vs Sem 2 per program studi
 
 ## Sistem Machine Learning
 
@@ -374,19 +459,59 @@ Pada bagian ini dijelaskan mengenai evaluasi model–model yang telah dibangun d
 
 ### Menjelankan Inferensi Prototype Sistem Machine Learning di Streamlit
 
-Jelaskan cara menjalankan protoype sistem machine learning yang telah dibuat. Selain itu, sertakan juga link untuk mengakses prototype tersebut.
+![Streamlit](assets/streamlit-4.png)
 
-```bash
+Cara Menjalankan:
 
-```
+1. Akses Lokal
+
+   1. Lakukan Setup Environment pada bagian ini ([Setup Environment](#setup-environment)).
+   2. Jalankan aplikasi
+
+      ```bash
+      streamlit run app.py
+      ```
+
+      Nantinya browser akan terbuka otomatis di `http://localhost:8501` dan dapat mengisi form untuk melihat prediksi.
+
+2. Akses Online (Streamlit Community Cloud)
+
+   URL Streamlit: [https://muhakbarhamid21-prediksi-dropout-mahasiswa.streamlit.app](https://muhakbarhamid21-prediksi-dropout-mahasiswa.streamlit.app)
 
 ## Conclusion
 
-Jelaskan konklusi dari proyek yang dikerjakan.
+Proyek ini berhasil membuktikan bahwa pendekatan berbasis data science mampu memberikan solusi strategis bagi permasalahan tingginya tingkat dropout mahasiswa di Jaya Jaya Institut. Melalui proses analisis menyeluruh mulai dari eksplorasi data, pemodelan machine learning, hingga pembuatan dashboard dan prototype prediksi, institusi kini dapat mengenali mahasiswa berisiko tinggi secara lebih dini dan objektif.
+
+Hasil evaluasi menunjukkan bahwa model CatBoost tanpa oversampling memberikan performa terbaik, dengan nilai akurasi, F1-score, dan ROC AUC yang unggul dibanding model lainnya. Model ini tidak hanya akurat tetapi juga stabil, interpretatif, dan siap digunakan dalam implementasi nyata.
+
+Dashboard interaktif yang dibangun memudahkan manajemen untuk memahami tren dropout dan karakteristik mahasiswa aktif, sementara sistem prediksi berbasis Streamlit dapat digunakan untuk evaluasi risiko secara individual. Dengan kedua sistem ini, institusi dapat mengambil langkah proaktif dalam membimbing mahasiswa yang rentan dropout, sehingga meningkatkan tingkat kelulusan dan efisiensi operasional.
+
+Secara keseluruhan, proyek ini tidak hanya menjawab permasalahan dropout secara teknis, tetapi juga memberikan fondasi kuat bagi pengambilan keputusan berbasis data di lingkungan pendidikan tinggi.
 
 ### Rekomendasi Action Items
 
-Berikan beberapa rekomendasi action items yang harus dilakukan perusahaan guna menyelesaikan permasalahan atau mencapai target mereka.
+Berdasarkan hasil analisis dan evaluasi model prediksi dropout mahasiswa, berikut adalah beberapa rekomendasi tindakan strategis (action items) yang dapat dilakukan oleh Jaya Jaya Institut untuk mengatasi permasalahan dan meningkatkan retensi mahasiswa:
 
-- action item 1
-- action item 2
+1. Implementasi Sistem Peringatan Dini (Early Warning System)
+
+   Gunakan model machine learning (CatBoost yang sudah dibangun dengan hasil terbaik) sebagai sistem pendeteksi risiko dropout untuk mahasiswa baru maupun aktif. Mahasiswa dengan probabilitas dropout tinggi dapat langsung diarahkan ke layanan bimbingan akademik atau psikologis.
+
+2. Peningkatan Intervensi Dini Berdasarkan Risiko
+
+   Buat skema intervensi berdasarkan skor probabilitas dropout yang dihasilkan model. Misalnya:
+
+   - Probabilitas > 70% → intervensi langsung oleh dosen pembimbing.
+   - Probabilitas 50–70% → evaluasi performa dan undangan sesi konsultasi.
+   - Probabilitas < 50% → pemantauan rutin.
+
+3. Penguatan Program Bimbingan Akademik dan Sosial
+
+   Berdasarkan fitur-fitur penting (seperti GPA semester awal, beasiswa, status debitur), susun program bimbingan dan bantuan finansial secara lebih tepat sasaran.
+
+4. Pelatihan Staff Akademik dan Konselor
+
+   Latih dosen pembimbing dan staf akademik agar mampu memanfaatkan dashboard dan sistem prediksi dengan baik, serta memahami bagaimana menerjemahkan skor risiko menjadi strategi pendampingan konkret.
+
+5. Evaluasi Rutin dan Penyempurnaan Model
+
+   Lakukan evaluasi berkala terhadap performa model menggunakan data terbaru. Jika terdapat perubahan pola, update model dan lakukan fine-tuning ulang untuk menjaga akurasi dan relevansinya.
